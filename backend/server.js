@@ -16,10 +16,12 @@ dotenv.config({ path: path.join(__dirname, 'config.env'), override: true });
 const app = express();
 
 // CORS configuration for production
+const corsOrigins = process.env.NODE_ENV === 'production' 
+  ? [process.env.CORS_ORIGIN || 'https://emp-leave.vercel.app', 'https://*.vercel.app']
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://env-pollution-logger.vercel.app', 'https://*.vercel.app', 'https://env-pollution-logger-frontend.vercel.app'] // Allow Vercel domains
-    : ['http://localhost:5173', 'http://localhost:3000'],
+  origin: corsOrigins,
   credentials: true
 }));
 
