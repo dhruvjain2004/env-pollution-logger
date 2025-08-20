@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { config } from './config';
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -21,8 +22,8 @@ function App() {
     try {
       setLoading(true);
       const [employeesRes, leavesRes] = await Promise.all([
-        axios.get('/api/employees'),
-        axios.get('/api/leaves')
+        axios.get(config.endpoints.employees),
+        axios.get(config.endpoints.leaves)
       ]);
       setEmployees(employeesRes.data);
       setLeaves(leavesRes.data);
@@ -37,7 +38,7 @@ function App() {
   const handleEmployeeSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/employees', employeeForm);
+      const response = await axios.post(config.endpoints.employees, employeeForm);
       setEmployees([...employees, response.data]);
       setEmployeeForm({ name: '', email: '', department: '' });
       setShowEmployeeForm(false);
@@ -50,7 +51,7 @@ function App() {
   const handleLeaveSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/leaves', leaveForm);
+      const response = await axios.post(config.endpoints.leaves, leaveForm);
       setLeaves([...leaves, response.data]);
       setLeaveForm({ employeeId: '', startDate: '', endDate: '', reason: '' });
       setShowLeaveForm(false);
@@ -62,7 +63,7 @@ function App() {
 
   const updateStatus = async (id, status) => {
     try {
-      const response = await axios.patch(`/api/leaves/${id}/status`, { status });
+      const response = await axios.patch(`${config.endpoints.leaves}/${id}/status`, { status });
       setLeaves(prev => prev.map(l => l._id === id ? response.data : l));
     } catch (err) {
       setError('Failed to update status');
